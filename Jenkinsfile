@@ -1,5 +1,8 @@
 pipeline {
     agent none
+    options {
+        skipDefaultCheckout()
+    }
     stages {
         stage('Build') {
             agent {
@@ -22,9 +25,11 @@ pipeline {
         }
         stage('Test Git') {
             agent any
+            changeAuthors = currentBuild.changeSets.collect { set ->
+                set.collect { entry -> entry.author.fullName }
+            }.flatten()
             steps {
-                sh "echo ${env.GIT_AUTHOR_NAME}"
-                sh "echo ${env.GIT_AUTHOR_EMAIL}"
+                sh "echo ${changeAuthors}"
             }
         }
     }
