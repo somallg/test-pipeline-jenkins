@@ -6,6 +6,10 @@ def getComitterEmail() {
     return sh(script: 'git show -s --pretty=%ae', returnStdout: true)
 }
 
+def getBranch() {
+    return sh(script: 'git show -s --pretty=%ae', returnStdout: true)
+}
+
 pipeline {
     agent none
     options {
@@ -13,9 +17,29 @@ pipeline {
     }
     stages {
         stage('Checkout') {
+            failFast true
+            parallel {
+                stage('Checkout Trainee Code') {
+                    agent any
+                    steps {
+                        checkout scm
+                    }
+                }
+                stage('Checkout Test Code') {
+                    agent any
+                    steps {
+                        git(branch: 'master',
+                            url: 'https://github.com/somallg/test-pipeline-js.git')
+                    }
+                }
+            }
+        }
+        stage('Merge Code') {
             agent any
             steps {
-                checkout scm
+                echo 'Merge Trainee Code and Test Code'
+                sh 'pwd'
+                sh 'ls -al'
             }
         }
         stage('Build') {
