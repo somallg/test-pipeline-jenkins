@@ -23,8 +23,8 @@ pipeline {
         stage('Test Git') {
             agent any
             steps {
-                echo 'Author is ' + env.GIT_AUTHOR_NAME
-                echo 'Author email is ' + env.GIT_AUTHOR_EMAIL
+                sh "echo ${env.GIT_AUTHOR_NAME}"
+                sh "echo ${env.GIT_AUTHOR_EMAIL}"
             }
         }
     }
