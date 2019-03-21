@@ -20,5 +20,12 @@ pipeline {
                 sh 'java -version'
             }
         }
+        stage('Test Git') {
+            agent any
+            steps {
+                echo 'Author is ${GIT_AUTHOR_NAME}'
+                echo 'Author email is ${GIT_AUTHOR_EMAIL}'
+            }
+        }
     }
 }
