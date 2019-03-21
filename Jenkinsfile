@@ -14,6 +14,7 @@ pipeline {
     agent none
     options {
         skipDefaultCheckout(true)
+        checkoutToSubdirectory('trainee')
     }
     stages {
         stage('Checkout') {
@@ -22,14 +23,18 @@ pipeline {
                 stage('Checkout Trainee Code') {
                     agent any
                     steps {
+                        sh 'pwd'
                         checkout scm
+                        sh 'ls -al'
                     }
                 }
                 stage('Checkout Test Code') {
                     agent any
                     steps {
+                        sh 'pwd'
                         git(branch: 'master',
                             url: 'https://github.com/somallg/test-pipeline-js.git')
+                        sh 'ls -al'
                     }
                 }
             }
