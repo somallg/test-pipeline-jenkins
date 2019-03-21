@@ -1,9 +1,21 @@
+def getComitter() {
+    return sh(script: 'git show -s --pretty=%an', returnStdout: true)
+}
+
+def getComitterEmail() {
+    return sh(script: 'git show -s --pretty=%ae', returnStdout: true)
+}
+
 pipeline {
     agent none
     options {
-        skipDefaultCheckout()
+        skipDefaultCheckout(true)
     }
     stages {
+        stage('Checkout') {
+            agent any
+            checkout scm
+        }
         stage('Build') {
             agent {
                 docker 'maven:3-alpine'
@@ -25,11 +37,9 @@ pipeline {
         }
         stage('Test Git') {
             agent any
-            changeAuthors = currentBuild.changeSets.collect { set ->
-                set.collect { entry -> entry.author.fullName }
-            }.flatten()
             steps {
-                sh "echo ${changeAuthors}"
+                sh "echo Trainee Name: ${getComitter()}"
+                sh "echo Trainee Email: ${getComitterEmail()}"
             }
         }
     }
