@@ -44,17 +44,8 @@ pipeline {
             }
             steps {
                 echo 'Merge Trainee Code and Test Code'
-                sh 'rsync -a test-code/ trainee-code/'
-                sh 'ls -alR trainee-code'
-            }
-        }
-        stage('Move code to workspace') {
-            agent any
-            steps {
-                sh "find ${traineeCode} -maxdepth 1 -exec mv -t . {} +"
-                sh "rm -rf ${traineeCode}"
-                sh "rm -rf ${testCode}"
-                sh "ls -alR"
+                sh "rsync -a ${testCode}/ ${traineeCode}/"
+                sh "ls -alR ${traineeCode}"
             }
         }
         stage('Install Dependencies') {
@@ -62,11 +53,13 @@ pipeline {
                 docker 'node:10-alpine'
             }
             steps {
-                sh 'pwd'
-                echo 'Install dependencies'
-                sh 'npm install'
-                sh 'pwd'
-                sh 'ls -al'
+                dir(traineeCode) {
+                    sh 'pwd'
+                    echo 'Install dependencies'
+                    sh 'npm install'
+                    sh 'pwd'
+                    sh 'ls -al'
+                }
             }
         }
         stage('Build') {
@@ -80,9 +73,11 @@ pipeline {
                 docker 'node:10-alpine'
             }
             steps {
-                echo 'Run unit test'
-                sh 'npm test'
-                sh 'ls -al'
+                dir(traineeCode) {
+                    echo 'Run unit test'
+                    sh 'npm test'
+                    sh 'ls -al'
+                }
             }
             post {
                 always {
@@ -95,6 +90,13 @@ pipeline {
             steps {
                 sh "echo Trainee Name: ${getComitter()}"
                 sh "echo Trainee Email: ${getComitterEmail()}"
+            }
+        }
+        stage('Clean up') {
+            agent any {
+                steps {
+                    cleanWs()
+                }
             }
         }
     }
