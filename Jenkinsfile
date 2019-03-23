@@ -10,6 +10,10 @@ def getBranch() {
     return sh(script: 'git show -s --pretty=%ae', returnStdout: true)
 }
 
+def traineeCode = 'trainee-code'
+
+def testCode = 'test-code'
+
 pipeline {
     agent none
     options {
@@ -21,12 +25,12 @@ pipeline {
             agent any
             steps {
                 sh 'pwd'
-                dir('trainee-code') {
+                dir(traineeCode) {
                     checkout scm
                     sh 'pwd'
                     sh 'ls -al'
                 }
-                dir('test-code') {
+                dir(testCode) {
                     git(branch: 'master',
                             url: 'https://github.com/somallg/test-pipeline-js.git')
                     sh 'pwd'
@@ -49,8 +53,12 @@ pipeline {
                 docker 'node:10-alpine'
             }
             steps {
-                echo 'Install dependencies'
-                sh 'npm ci'
+                dir(traineeCode) {
+                    echo 'Install dependencies'
+                    sh 'npm ci'
+                    sh 'pwd'
+                    sh 'ls -al'
+                }
             }
         }
         stage('Build') {
@@ -64,8 +72,10 @@ pipeline {
                 docker 'node:10-alpine'
             }
             steps {
-                echo 'Run unit test'
-                sh 'npm test'
+                dir(traineeCode) {
+                    echo 'Run unit test'
+                    sh 'npm test'
+                }
             }
         }
         stage('Test Git') {
