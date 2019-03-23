@@ -18,24 +18,19 @@ pipeline {
     }
     stages {
         stage('Checkout') {
-            failFast true
-            parallel {
-                stage('Checkout Trainee Code') {
-                    agent any
-                    steps {
-                        sh 'pwd'
-                        checkout scm
-                        sh 'ls -al'
-                    }
+            agent any
+            steps {
+                sh 'pwd'
+                dir('trainee-code') {
+                    checkout scm
+                    sh 'pwd'
+                    sh 'ls -al'
                 }
-                stage('Checkout Test Code') {
-                    agent any
-                    steps {
-                        sh 'pwd'
-                        git(branch: 'master',
+                dir('test-code') {
+                    git(branch: 'master',
                             url: 'https://github.com/somallg/test-pipeline-js.git')
-                        sh 'ls -al'
-                    }
+                    sh 'pwd'
+                    sh 'ls -al'
                 }
             }
         }
