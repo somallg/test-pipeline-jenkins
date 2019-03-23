@@ -38,27 +38,32 @@ pipeline {
             agent any
             steps {
                 echo 'Merge Trainee Code and Test Code'
-                sh 'pwd'
-                sh 'ls -al'
+                sh 'rsync -a test-code/ trainee-code/'
+                sh 'ls -alR trainee-code'
+            }
+        }
+        stage('Install Dependencies') {
+            agent {
+                docker 'node:10-alpine'
+            }
+            steps {
+                echo 'Install dependencies'
+                sh 'npm ci'
             }
         }
         stage('Build') {
-            agent {
-                docker 'maven:3-alpine'
-            }
+            agent any
             steps {
-                echo 'Hello, Maven'
-                sh 'mvn --version'
-                sh 'pwd'
+                echo 'Build code'
             }
         }
         stage('Test') {
             agent {
-                docker 'openjdk:8-jre'
+                docker 'node:10-alpine'
             }
             steps {
-                echo 'Hello, JDK'
-                sh 'java -version'
+                echo 'Run unit test'
+                sh 'npm test'
             }
         }
         stage('Test Git') {
