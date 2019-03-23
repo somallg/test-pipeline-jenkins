@@ -46,6 +46,8 @@ pipeline {
                 echo 'Merge Trainee Code and Test Code'
                 sh "rsync -a ${testCode}/ ${traineeCode}/"
                 sh "ls -alR ${traineeCode}"
+                sh "pwd"
+                sh "ls -al"
             }
         }
         stage('Install Dependencies') {
