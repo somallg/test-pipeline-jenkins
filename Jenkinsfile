@@ -90,13 +90,13 @@ pipeline {
             steps {
                 sh "echo Trainee Name: ${getComitter()}"
                 sh "echo Trainee Email: ${getComitterEmail()}"
+                sh "echo Branch: ${getBranch()}"
             }
         }
         stage('Clean up') {
-            agent any {
-                steps {
-                    cleanWs()
-                }
+            agent any
+            steps {
+                cleanWs()
             }
         }
     }
