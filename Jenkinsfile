@@ -76,6 +76,12 @@ pipeline {
                 dir(traineeCode) {
                     echo 'Run unit test'
                     sh 'npm test'
+                    sh 'ls -al'
+                }
+            }
+            post {
+                always {
+                    junit '${traineeCode}/junit.xml'
                 }
             }
         }
