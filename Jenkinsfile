@@ -51,10 +51,10 @@ pipeline {
         stage('Move code to workspace') {
             agent any
             steps {
-                sh 'find ${traineeCode} -maxdepth 1 -exec mv -t . {} +'
-                sh 'rm -rf ${traineeCode}'
-                sh 'rm -rf ${testCode}'
-                sh 'ls -alR'
+                sh "find ${traineeCode} -maxdepth 1 -exec mv -t . {} +"
+                sh "rm -rf ${traineeCode}"
+                sh "rm -rf ${testCode}"
+                sh "ls -alR"
             }
         }
         stage('Install Dependencies') {
