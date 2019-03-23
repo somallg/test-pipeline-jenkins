@@ -54,8 +54,9 @@ pipeline {
             }
             steps {
                 dir(traineeCode) {
+                    sh 'pwd'
                     echo 'Install dependencies'
-                    sh 'npm ci'
+                    sh 'npm install'
                     sh 'pwd'
                     sh 'ls -al'
                 }
