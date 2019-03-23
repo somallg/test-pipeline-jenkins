@@ -35,7 +35,9 @@ pipeline {
             }
         }
         stage('Merge Code') {
-            agent any
+            agent {
+                docker 'instrumentisto/rsync-ssh'
+            }
             steps {
                 echo 'Merge Trainee Code and Test Code'
                 sh 'rsync -a test-code/ trainee-code/'
