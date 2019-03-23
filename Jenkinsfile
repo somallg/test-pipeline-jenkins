@@ -97,7 +97,7 @@ pipeline {
                     sh "echo Trainee Email: ${getComitterEmail()}"
                     sh "echo Branch: ${getBranch()}"
                     emailext(body: 'A Test EMail',
-                            subject: 'Test',
+                            subject: 'Test test',
                             to: "${getComitterEmail()}",
                             recipientProviders: [
                                     [$class: 'CulpritsRecipientProvider']
