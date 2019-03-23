@@ -85,14 +85,6 @@ pipeline {
                 always {
                     sh "cat ${traineeCode}/junit.xml"
                     junit "${traineeCode}/junit.xml"
-                    emailext(body: 'A Test EMail',
-                             from: 'Fresher Academy',
-                             subject: 'Test',
-                             to: "${getComitterEmail()}",
-                             recipientProviders: [
-                                     [$class: 'CulpritsRecipientProvider']
-                             ])
-
                 }
             }
         }
@@ -104,6 +96,13 @@ pipeline {
                     sh "echo Trainee Name: ${getComitter()}"
                     sh "echo Trainee Email: ${getComitterEmail()}"
                     sh "echo Branch: ${getBranch()}"
+                    emailext(body: 'A Test EMail',
+                            from: 'Fresher Academy',
+                            subject: 'Test',
+                            to: "${getComitterEmail()}",
+                            recipientProviders: [
+                                    [$class: 'CulpritsRecipientProvider']
+                            ])
                 }
             }
         }
