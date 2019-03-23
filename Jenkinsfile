@@ -81,7 +81,9 @@ pipeline {
             }
             post {
                 always {
-                    junit 'junit.xml'
+                    sh "cat ${traineeCode}/junit.xml"
+                    junit "${traineeCode}/junit.xml"
+                    cleanWs()
                 }
             }
         }
