@@ -92,9 +92,11 @@ pipeline {
         stage('Test Git') {
             agent any
             steps {
-                sh "echo Trainee Name: ${getComitter()}"
-                sh "echo Trainee Email: ${getComitterEmail()}"
-                sh "echo Branch: ${getBranch()}"
+                dir(traineeCode) {
+                    sh "echo Trainee Name: ${getComitter()}"
+                    sh "echo Trainee Email: ${getComitterEmail()}"
+                    sh "echo Branch: ${getBranch()}"
+                }
             }
         }
         stage('Clean up') {
