@@ -86,8 +86,13 @@ pipeline {
                     sh "cat ${traineeCode}/junit.xml"
                     junit "${traineeCode}/junit.xml"
                     emailext body: 'A Test EMail',
-                             recipientProviders: [[$class: 'DevelopersRecipientProvider'],[$class: 'RequesterRecipientProvider']],
+                             from: 'Fresher Academy'
                              subject: 'Test'
+                             to: "${getComitterEmail()}"
+                             recipientProviders: [
+                                     [$class: 'CulpritsRecipientProvider']
+                             ]
+
                 }
             }
         }
