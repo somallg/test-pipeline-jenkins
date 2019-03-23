@@ -85,7 +85,9 @@ pipeline {
                 always {
                     sh "cat ${traineeCode}/junit.xml"
                     junit "${traineeCode}/junit.xml"
-                    cleanWs()
+                    emailext body: 'A Test EMail',
+                             recipientProviders: [[$class: 'DevelopersRecipientProvider'],[$class: 'RequesterRecipientProvider']],
+                             subject: 'Test'
                 }
             }
         }
@@ -93,6 +95,7 @@ pipeline {
             agent any
             steps {
                 dir(traineeCode) {
+                    sh 'pwd'
                     sh "echo Trainee Name: ${getComitter()}"
                     sh "echo Trainee Email: ${getComitterEmail()}"
                     sh "echo Branch: ${getBranch()}"
@@ -102,7 +105,7 @@ pipeline {
         stage('Clean up') {
             agent any
             steps {
-                cleanWs()
+                echo 'Clean up'
             }
         }
     }
