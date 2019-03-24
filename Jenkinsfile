@@ -96,12 +96,11 @@ pipeline {
                     sh "echo Trainee Name: ${getComitter()}"
                     sh "echo Trainee Email: ${getComitterEmail()}"
                     sh "echo Branch: ${getBranch()}"
-                    emailext(body: 'A Test EMail',
-                            subject: 'Test test',
+                    emailext(body: '''${JELLY_SCRIPT, template="report-email-jelly.html"}''',
+                            subject: "[Fresher Academy] Your work report",
                             to: "${getComitterEmail()}",
-                            recipientProviders: [
-                                    [$class: 'CulpritsRecipientProvider']
-                            ])
+                            replyTo: "${getComitterEmail()}",
+                            recipientProviders: [[$class: 'CulpritsRecipientProvider']])
                 }
             }
         }
