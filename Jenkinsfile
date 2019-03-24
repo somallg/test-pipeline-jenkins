@@ -76,6 +76,7 @@ pipeline {
             steps {
                 dir(traineeCode) {
                     echo 'Run unit test'
+                    sh 'npm test'
                     sh 'ls -al'
                 }
             }
