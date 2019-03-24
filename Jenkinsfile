@@ -83,7 +83,8 @@ pipeline {
             post {
                 always {
                     dir(traineeCode) {
-                        sh 'junit.xml'
+                        sh 'ls -al'
+                        sh 'cat junit.xml'
                         junit 'junit.xml'
                         emailext(body: '''${JELLY_SCRIPT, template="report-email-jelly.html"}''',
                                 subject: "[Fresher Academy] Your work report",
