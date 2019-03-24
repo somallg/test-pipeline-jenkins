@@ -58,8 +58,10 @@ pipeline {
             agent any
             steps {
                 dir(traineeCode) {
-                    traineeName = getComitter()
-                    traineeEmail = getComitterEmail()
+                    script {
+                        traineeName = getComitter()
+                        traineeEmail = getComitterEmail()
+                    }
                 }
             }
         }
