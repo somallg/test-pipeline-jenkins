@@ -58,7 +58,6 @@ pipeline {
                 dir(traineeCode) {
                     sh 'pwd'
                     echo 'Install dependencies'
-                    sh 'npm install'
                     sh 'pwd'
                     sh 'ls -al'
                 }
@@ -77,14 +76,20 @@ pipeline {
             steps {
                 dir(traineeCode) {
                     echo 'Run unit test'
-                    sh 'npm test'
                     sh 'ls -al'
                 }
             }
             post {
                 always {
-                    sh "cat ${traineeCode}/junit.xml"
-                    junit "${traineeCode}/junit.xml"
+                    dir(traineeCode) {
+                        sh 'junit.xml'
+                        junit 'junit.xml'
+                        emailext(body: '''${JELLY_SCRIPT, template="report-email-jelly.html"}''',
+                                subject: "[Fresher Academy] Your work report",
+                                to: "${getComitterEmail()}",
+                                replyTo: "${getComitterEmail()}",
+                                recipientProviders: [[$class: 'CulpritsRecipientProvider']])
+                    }
                 }
             }
         }
@@ -96,11 +101,6 @@ pipeline {
                     sh "echo Trainee Name: ${getComitter()}"
                     sh "echo Trainee Email: ${getComitterEmail()}"
                     sh "echo Branch: ${getBranch()}"
-                    emailext(body: '''${JELLY_SCRIPT, template="report-email-jelly.html"}''',
-                            subject: "[Fresher Academy] Your work report",
-                            to: "${getComitterEmail()}",
-                            replyTo: "${getComitterEmail()}",
-                            recipientProviders: [[$class: 'CulpritsRecipientProvider']])
                 }
             }
         }
