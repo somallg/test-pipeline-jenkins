@@ -16,6 +16,10 @@ def testCode = 'test-code'
 
 pipeline {
     agent none
+    environment {
+        traineeName = ''
+        traineeEmail = ''
+    }
     options {
         skipDefaultCheckout(true)
         checkoutToSubdirectory('trainee')
@@ -48,6 +52,15 @@ pipeline {
                 sh "ls -alR ${traineeCode}"
                 sh "pwd"
                 sh "ls -al"
+            }
+        }
+        stage('Get Trainee Information') {
+            agent any
+            steps {
+                dir(traineeCode) {
+                    traineeName = getComitter()
+                    traineeEmail = getComitterEmail()
+                }
             }
         }
         stage('Install Dependencies') {
@@ -87,22 +100,11 @@ pipeline {
                         sh 'cat junit.xml'
                         junit 'junit.xml'
                         emailext(body: '''${JELLY_SCRIPT, template="report-email-jelly.html"}''',
-                                subject: "[Fresher Academy] Your work report",
-                                to: "${getComitterEmail()}",
-                                replyTo: "${getComitterEmail()}",
+                                subject: "[Fresher Academy] Your work report ${traineeName}",
+                                to: "${traineeEmail}",
+                                replyTo: "${traineeEmail}",
                                 recipientProviders: [[$class: 'CulpritsRecipientProvider']])
                     }
-                }
-            }
-        }
-        stage('Test Git') {
-            agent any
-            steps {
-                dir(traineeCode) {
-                    sh 'pwd'
-                    sh "echo Trainee Name: ${getComitter()}"
-                    sh "echo Trainee Email: ${getComitterEmail()}"
-                    sh "echo Branch: ${getBranch()}"
                 }
             }
         }
