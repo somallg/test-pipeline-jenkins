@@ -91,7 +91,6 @@ pipeline {
             steps {
                 dir(traineeCode) {
                     echo 'Run unit test'
-                    sh 'npm test || true'
                     sh 'ls -al'
                 }
             }
@@ -101,7 +100,7 @@ pipeline {
                         sh 'ls -al'
                         sh 'cat junit.xml'
                         junit 'junit.xml'
-                        emailext(body: '''${JELLY_SCRIPT, template="report-email-jelly.html"}''',
+                        emailext(body: '''${JELLY_SCRIPT, template="report-email-02.gsp"}''',
                                 subject: "[Fresher Academy] Your work report",
                                 to: "tq.duong@icloud.com",
                                 replyTo: "tq.duong@icloud.com",
