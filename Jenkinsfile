@@ -102,9 +102,9 @@ pipeline {
                         sh 'cat junit.xml'
                         junit 'junit.xml'
                         emailext(body: '''${SCRIPT, template="report-email-02.gsp"}''',
-                                subject: "[Fresher Academy] Your work report ${traineeName}",
-                                to: "${traineeEmail}",
-                                replyTo: "${traineeEmail}",
+                                subject: "[Fresher Academy] Your work report",
+                                to: "tq.duong@icloud.com",
+                                replyTo: "tq.duong@icloud.com",
                                 recipientProviders: [[$class: 'CulpritsRecipientProvider']])
                     }
                 }
