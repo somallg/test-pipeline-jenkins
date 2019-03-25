@@ -101,7 +101,7 @@ pipeline {
                         sh 'cat junit.xml'
                         sh 'touch junit.xml'
                         junit 'junit.xml'
-                        emailext(body: '''${JELLY_SCRIPT, template="report-email-02.gsp"}''',
+                        emailext(body: '''${SCRIPT, template="report-email-02.gsp"}''',
                                 subject: "[Fresher Academy] Your work report",
                                 to: "tq.duong@icloud.com",
                                 replyTo: "tq.duong@icloud.com",
