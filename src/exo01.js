@@ -2,4 +2,9 @@ function sum(a, b) {
   return 0;
 }
 
-module.exports = sum;
+function add(a, b, c) {
+	let sum = 0;
+	return a + b;
+}
+
+module.exports = { sum, add };
