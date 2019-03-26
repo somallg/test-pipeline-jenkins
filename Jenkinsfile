@@ -66,6 +66,7 @@ pipeline {
             steps {
                 dir(traineeCode) {
                     echo 'Install dependencies'
+                    sh 'npm install'
                 }
             }
         }
