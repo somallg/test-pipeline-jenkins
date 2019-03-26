@@ -28,17 +28,14 @@ pipeline {
         stage('Checkout') {
             agent any
             steps {
-                sh 'pwd'
                 dir(traineeCode) {
+                    echo 'Checkout Trainee Code'
                     checkout scm
-                    sh 'pwd'
-                    sh 'ls -al'
                 }
                 dir(testCode) {
+                    echo 'Checkout Test Code'
                     git(branch: 'master',
                             url: 'https://github.com/somallg/test-pipeline-js.git')
-                    sh 'pwd'
-                    sh 'ls -al'
                 }
             }
         }
@@ -49,9 +46,6 @@ pipeline {
             steps {
                 echo 'Merge Trainee Code and Test Code'
                 sh "rsync -a ${testCode}/ ${traineeCode}/"
-                sh "ls -alR ${traineeCode}"
-                sh "pwd"
-                sh "ls -al"
             }
         }
         stage('Get Trainee Information') {
@@ -71,10 +65,7 @@ pipeline {
             }
             steps {
                 dir(traineeCode) {
-                    sh 'pwd'
                     echo 'Install dependencies'
-                    sh 'pwd'
-                    sh 'ls -al'
                 }
             }
         }
@@ -91,23 +82,45 @@ pipeline {
             steps {
                 dir(traineeCode) {
                     echo 'Run unit test'
-                    sh 'ls -al'
+                    sh 'npm test || true'
                 }
             }
             post {
                 always {
                     dir(traineeCode) {
-                        sh 'ls -al'
-                        sh 'cat junit.xml'
-                        sh 'touch junit.xml'
+                        echo 'Record JUnit Result'
                         junit 'junit.xml'
-                        emailext(body: '''${SCRIPT, template="report-email-02.gsp"}''',
-                                subject: "[Fresher Academy] Your work report",
-                                to: "tq.duong@icloud.com",
-                                replyTo: "tq.duong@icloud.com",
-                                recipientProviders: [[$class: 'CulpritsRecipientProvider']])
                     }
                 }
+            }
+        }
+        stage('Lint') {
+            agent {
+                docker 'node:10-alpine'
+            }
+            steps {
+                dir(traineeCode) {
+                    echo 'Run Lint Tools'
+                    sh 'npm run lint || true'
+                }
+            }
+            post {
+                always {
+                    dir(traineeCode) {
+                        echo 'Record Checkstyle Result'
+                        recordIssues(tool:checkStyle(pattern: 'checkstyle.xml'))
+                    }
+                }
+            }
+        }
+        stage('Report') {
+            agent any
+            steps {
+                emailext(body: '''${SCRIPT, template="report-email-02.gsp"}''',
+                        subject: "[Fresher Academy] Your work report",
+                        to: "${traineeEmail}",
+                        replyTo: "${traineeEmail}",
+                        recipientProviders: [[$class: 'CulpritsRecipientProvider']])
             }
         }
         stage('Clean up') {
