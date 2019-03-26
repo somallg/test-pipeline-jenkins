@@ -48,17 +48,6 @@ pipeline {
                 sh "rsync -a ${testCode}/ ${traineeCode}/"
             }
         }
-        stage('Get Trainee Information') {
-            agent any
-            steps {
-                dir(traineeCode) {
-                    script {
-                        traineeName = getComitter()
-                        traineeEmail = getComitterEmail()
-                    }
-                }
-            }
-        }
         stage('Install Dependencies') {
             agent {
                 docker 'node:10-alpine'
@@ -110,6 +99,17 @@ pipeline {
                     dir(traineeCode) {
                         echo 'Record Checkstyle Result'
                         recordIssues(tool:checkStyle(pattern: 'checkstyle.xml'))
+                    }
+                }
+            }
+        }
+        stage('Get Trainee Information') {
+            agent any
+            steps {
+                dir(traineeCode) {
+                    script {
+                        traineeName = getComitter()
+                        traineeEmail = getComitterEmail()
                     }
                 }
             }
