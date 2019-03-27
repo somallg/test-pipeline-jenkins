@@ -19,7 +19,7 @@ pipeline {
     environment {
         traineeName = ''
         traineeEmail = ''
-        exercise = env.BRANCH_NAME
+        exercise = "${env.BRANCH_NAME}"
     }
     options {
         skipDefaultCheckout(true)
