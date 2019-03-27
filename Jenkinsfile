@@ -19,6 +19,7 @@ pipeline {
     environment {
         traineeName = ''
         traineeEmail = ''
+        exercise = env.BRANCH_NAME
     }
     options {
         skipDefaultCheckout(true)
@@ -117,6 +118,7 @@ pipeline {
         stage('Report') {
             agent any
             steps {
+                greet(name: "${traineeName}${env.BRANCH_NAME}")
                 emailext(body: '''${SCRIPT, template="report-email-02.gsp"}''',
                         subject: "[Fresher Academy] Your work report",
                         to: "${traineeEmail}",
