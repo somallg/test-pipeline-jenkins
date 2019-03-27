@@ -19,7 +19,7 @@ pipeline {
     environment {
         traineeName = ''
         traineeEmail = ''
-        exercise = "${env.BRANCH_NAME}"
+        exercise = ''
     }
     options {
         skipDefaultCheckout(true)
@@ -111,6 +111,7 @@ pipeline {
                     script {
                         traineeName = getComitter()
                         traineeEmail = getComitterEmail()
+                        exercise = env.BRANCH_NAME
                     }
                 }
             }
@@ -118,7 +119,7 @@ pipeline {
         stage('Report') {
             agent any
             steps {
-                greet(name: "${traineeName}${env.BRANCH_NAME}")
+                fass(traineeName: "${traineeName}", exercise: "${exercise.minus(traineeName)}")
                 emailext(body: '''${SCRIPT, template="report-email-02.gsp"}''',
                         subject: "[Fresher Academy] Your work report",
                         to: "${traineeEmail}",
