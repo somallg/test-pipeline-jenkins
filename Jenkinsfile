@@ -14,10 +14,12 @@ def traineeCode = 'trainee-code'
 
 def testCode = 'test-code'
 
+def TRAINEE_LIST = ['duongtq', 'tuanna']
+
 pipeline {
     agent none
     environment {
-        traineeName = ''
+        traineeAccount = ''
         traineeEmail = ''
         exercise = ''
     }
@@ -38,6 +40,32 @@ pipeline {
                     git(branch: 'master',
                             url: 'https://github.com/somallg/test-pipeline-js.git')
                 }
+            }
+        }
+        stage('Get Trainee Information') {
+            agent any
+            steps {
+                dir(traineeCode) {
+                    script {
+                        traineeAccount = getComitter()
+                        traineeEmail = getComitterEmail()
+                        exercise = env.BRANCH_NAME
+                    }
+                }
+            }
+        }
+        stage('Validate Trainee Account and Exercise') {
+            agent any
+            when {
+                anyOf {
+                    expression {
+                        TRAINEE_LIST.contains(traineeAccount)
+                    }
+                }
+            }
+            steps {
+                echo 'Trainee is not in Trainee List. Exit'
+                sh 'exit 1'
             }
         }
         stage('Merge Code') {
@@ -104,22 +132,10 @@ pipeline {
                 }
             }
         }
-        stage('Get Trainee Information') {
-            agent any
-            steps {
-                dir(traineeCode) {
-                    script {
-                        traineeName = getComitter()
-                        traineeEmail = getComitterEmail()
-                        exercise = env.BRANCH_NAME
-                    }
-                }
-            }
-        }
         stage('Report') {
             agent any
             steps {
-                fass(traineeName: "${traineeName}", exercise: "${exercise.minus(traineeName)}")
+                fass(traineeAccount: "${traineeAccount}", exercise: "${exercise.minus(traineeAccount + '/' + traineeCode)}")
                 emailext(body: '''${SCRIPT, template="report-email-02.gsp"}''',
                         subject: "[Fresher Academy] Your work report",
                         to: "${traineeEmail}",
