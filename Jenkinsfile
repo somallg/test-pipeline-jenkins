@@ -15,6 +15,7 @@ def traineeCode = 'trainee-code'
 def testCode = 'test-code'
 
 def TRAINEE_LIST = ['duongtq', 'tuanna']
+def EXCERCISE_LIST = ['exo1', 'exo2']
 
 pipeline {
     agent none
@@ -59,12 +60,12 @@ pipeline {
             when {
                 anyOf {
                     expression {
-                        TRAINEE_LIST.contains(traineeAccount)
+                        !TRAINEE_LIST.contains(traineeAccount)
                     }
                 }
             }
             steps {
-                echo 'Trainee is not in Trainee List. Exit'
+                echo 'Trainee is not in Trainee List. Make sure you have config Git username properly'
                 sh 'exit 1'
             }
         }
